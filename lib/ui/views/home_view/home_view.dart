@@ -76,7 +76,7 @@ class HomeView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             CircularProgressIndicator(),
-                            SizedBox(height: 10),
+                            SizedBox(height: 15),
                             Text(
                               'Fetching Wonderful Recipes.\nPlease wait...',
                               textAlign: TextAlign.center,
