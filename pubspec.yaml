@@ -34,18 +34,36 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  //stacked package for state management
   stacked: ^2.2.7
+
+  //get package for routing, bottom sheets, dialogs
   get: ^4.3.8
+
+  //google_fonts package to access and use google fonts
   google_fonts: ^3.0.1
+
+  //dio package for handling api request
   dio: ^4.0.6
+
+  //this package allow checking if the device have
+  //internet connectivity
   internet_connection_checker: ^0.0.1+4
+
+  //to save image to cache
   cached_network_image: ^3.2.1
-  equatable: ^2.0.3
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  //dev dependency for file generation
   build_runner: ^2.1.5
+
+  //used with build runner to generate files needed for
+  //stacked state management i.e generate files for routing
+  //and service dependency
   stacked_generator: ^0.6.2
 
   # The "flutter_lints" package below contains a set of recommended lints to
