@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:my_recipe_app/core/api_service/api_service.dart';
 
 class ApiServiceImpl extends ApiService {
@@ -15,7 +16,9 @@ class ApiServiceImpl extends ApiService {
 
   //instantiate dio package
   //use dio package for api http request
-  final _dio = Dio();
+  var _dio = Dio();
+  var _dioCacheManager =
+      DioCacheManager(CacheConfig(baseUrl: 'tasty.p.rapidapi.com'));
 
   //search recipe by query and tags
   //send an api request that will request recipes
@@ -25,7 +28,13 @@ class ApiServiceImpl extends ApiService {
     //put tag list into string, separated by comma
     String? finalTags = tags?.join(',');
 
-    final searchResult = await _dio.get("$_host/recipes/list",
+    _dio.interceptors.add(_dioCacheManager.interceptor);
+
+    final searchResult = await _dio.get(
+      "$_host/recipes/list",
+      options: buildCacheOptions(
+        Duration(days: 7),
+        forceRefresh: true,
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -33,10 +42,12 @@ class ApiServiceImpl extends ApiService {
             'X-Rapidapi-Host': _rapidApiHost,
           },
         ),
-        queryParameters: {
-          'q': query,
-          'tags': finalTags,
-        });
+      ),
+      queryParameters: {
+        'q': query,
+        'tags': finalTags,
+      },
+    );
     return searchResult;
   }
 
@@ -45,31 +56,40 @@ class ApiServiceImpl extends ApiService {
 //get recipe extended info by passing recipe id as param
   @override
   Future<Response> getRecipeInfo({required String recipeId}) async {
+    _dio.interceptors.add(_dioCacheManager.interceptor);
     return await _dio.get('$_host//recipes/get-more-info',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Rapidapi-Key': _rapidApiKey,
-            'X-Rapidapi-Host': _rapidApiHost,
-          },
+        options: buildCacheOptions(
+          Duration(days: 7),
+          //forceRefresh: true,
+          options: Options(
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Rapidapi-Key': _rapidApiKey,
+              'X-Rapidapi-Host': _rapidApiHost,
+            },
+          ),
         ),
         queryParameters: {
           'id': recipeId,
         });
   }
 
-
 //send an api request that will get the related recipes
 //get related recipes by passing the recipe id to the params
   @override
   Future<Response> getSimilarRecipes({required String recipeId}) async {
+    _dio.interceptors.add(_dioCacheManager.interceptor);
     return await _dio.get('$_host/recipes/list-similarities',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Rapidapi-Key': _rapidApiKey,
-            'X-Rapidapi-Host': _rapidApiHost,
-          },
+        options: buildCacheOptions(
+          Duration(days: 7),
+          forceRefresh: true,
+          options: Options(
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Rapidapi-Key': _rapidApiKey,
+              'X-Rapidapi-Host': _rapidApiHost,
+            },
+          ),
         ),
         queryParameters: {
           'recipe_id': recipeId,
@@ -80,13 +100,18 @@ class ApiServiceImpl extends ApiService {
   //categorize the feed recipes according to the type i.e 'trending'
   @override
   Future<Response> getFeedRecipes() async {
+    _dio.interceptors.add(_dioCacheManager.interceptor);
     return await _dio.get('$_host/feeds/list',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Rapidapi-Key': _rapidApiKey,
-            'X-Rapidapi-Host': _rapidApiHost,
-          },
+        options: buildCacheOptions(
+          Duration(days: 7),
+          forceRefresh: true,
+          options: Options(
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Rapidapi-Key': _rapidApiKey,
+              'X-Rapidapi-Host': _rapidApiHost,
+            },
+          ),
         ),
         queryParameters: {
           'size': '1',
@@ -96,17 +121,23 @@ class ApiServiceImpl extends ApiService {
         });
   }
 
-
 //send an api request that will get all tags
   @override
   Future<Response> getFilterTags() async {
+    _dio.interceptors.add(_dioCacheManager.interceptor);
     return await _dio.get('$_host/feeds/list',
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Rapidapi-Key': _rapidApiKey,
-            'X-Rapidapi-Host': _rapidApiHost,
-          },
+        options: buildCacheOptions(
+          Duration(days: 7),
+          forceRefresh: true,
+          options: Options(
+            receiveTimeout: 5000,
+            sendTimeout: 5000,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Rapidapi-Key': _rapidApiKey,
+              'X-Rapidapi-Host': _rapidApiHost,
+            },
+          ),
         ),
         queryParameters: {
           'size': '1',
