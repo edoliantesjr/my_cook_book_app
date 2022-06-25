@@ -8,10 +8,9 @@ import '../../../models/recipe.dart';
 class RecipeInfoViewModel extends BaseViewModel {
 //
   final apiService = locator<ApiService>();
-  final naviatorService = locator<NavigatorService>();
+  final navigatorService = locator<NavigatorService>();
 
   List<Recipe> relatedRecipes = [];
-
 
   Future<void> getRelatedRecipe(String id) async {
     setBusy(true);
